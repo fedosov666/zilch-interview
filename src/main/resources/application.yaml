@@ -1,0 +1,4 @@
+spring:
+  application:
+    name: zilch-interview-payment-service
+
