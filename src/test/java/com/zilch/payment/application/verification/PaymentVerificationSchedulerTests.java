@@ -3,6 +3,7 @@ package com.zilch.payment.application.verification;
 import com.zilch.payment.PaymentFactory;
 import com.zilch.payment.application.verification.verifier.PaymentVerifier;
 import com.zilch.payment.domain.payment.Payment;
+import com.zilch.payment.domain.payment.PaymentCreatedEvent;
 import com.zilch.payment.domain.payment.PaymentProvider;
 import com.zilch.payment.domain.payment.enums.PaymentStatus;
 import com.zilch.payment.domain.verification.PaymentVerification;
@@ -54,11 +55,12 @@ class PaymentVerificationSchedulerTests {
     void scheduleVerifications_ShouldAcceptPayment_WhenNoVerificationsAreScheduled() {
         // Given
         Payment payment = PaymentFactory.createPayment(null);
+        PaymentCreatedEvent paymentCreatedEvent = new PaymentCreatedEvent(payment);
         when(firstTestVerifier.shouldVerify(payment)).thenReturn(false);
         when(secondTestVerifier.shouldVerify(payment)).thenReturn(false);
 
         // When
-        paymentVerificationScheduler.scheduleVerifications(payment);
+        paymentVerificationScheduler.scheduleVerifications(paymentCreatedEvent);
 
         // Then
         verify(paymentProvider).setPaymentStatus(payment.id(), PaymentStatus.ACCEPTED);
@@ -70,6 +72,7 @@ class PaymentVerificationSchedulerTests {
     void scheduleVerifications_ShouldScheduleVerification_OnlyForRequiredVerifiers() {
         // Given
         Payment payment = PaymentFactory.createPayment(null);
+        PaymentCreatedEvent paymentCreatedEvent = new PaymentCreatedEvent(payment);
         when(firstTestVerifier.shouldVerify(payment)).thenReturn(false);
         when(secondTestVerifier.shouldVerify(payment)).thenReturn(true);
         when(secondTestVerifier.type()).thenReturn(VerificationType.FRAUD_CHECK);
@@ -81,7 +84,7 @@ class PaymentVerificationSchedulerTests {
         when(paymentVerificationProvider.save(any())).thenReturn(verification);
 
         // When
-        paymentVerificationScheduler.scheduleVerifications(payment);
+        paymentVerificationScheduler.scheduleVerifications(paymentCreatedEvent);
 
         // Then
         verify(paymentVerificationProvider).save(any());
@@ -94,10 +97,11 @@ class PaymentVerificationSchedulerTests {
     void scheduleVerifications_ShouldRejectPayment_WhenExceptionOccurs() {
         // Given
         Payment payment = PaymentFactory.createPayment(null);
+        PaymentCreatedEvent paymentCreatedEvent = new PaymentCreatedEvent(payment);
         doThrow(new RuntimeException("Test Exception")).when(firstTestVerifier).shouldVerify(payment);
 
         // When
-        paymentVerificationScheduler.scheduleVerifications(payment);
+        paymentVerificationScheduler.scheduleVerifications(paymentCreatedEvent);
 
         // Then
         verify(paymentProvider).setPaymentStatus(payment.id(), PaymentStatus.REJECTED);

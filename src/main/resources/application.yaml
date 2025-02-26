@@ -1,4 +1,19 @@
 spring:
   application:
     name: zilch-interview-payment-service
-
+  threadpools:
+    verificationScheduler:
+      corePoolSize: 3
+      maxPoolSize: 6
+      queueCapacity: 2500
+      threadNamePrefix: "v-scheduler-"
+    verificationRunner:
+      corePoolSize: 6
+      maxPoolSize: 12
+      queueCapacity: 5000
+      threadNamePrefix: "v-runner-"
+    verificationAnalyzer:
+      corePoolSize: 3
+      maxPoolSize: 6
+      queueCapacity: 1000
+      threadNamePrefix: "v-analyzer-"

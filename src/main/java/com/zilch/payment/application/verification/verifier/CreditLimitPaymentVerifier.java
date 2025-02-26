@@ -30,7 +30,7 @@ public class CreditLimitPaymentVerifier implements PaymentVerifier {
     public PaymentVerificationStatus verify(Payment payment) {
         logger.info("Run credit limit payment verification for {} payment", payment.id());
         //Work simulation
-        Thread.sleep(ThreadLocalRandom.current().nextLong(50, 2001));
+        Thread.sleep(ThreadLocalRandom.current().nextLong(50, 1001));
         return PaymentVerificationStatus.PASSED;
     }
 

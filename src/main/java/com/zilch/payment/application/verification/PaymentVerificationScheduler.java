@@ -3,16 +3,18 @@ package com.zilch.payment.application.verification;
 import com.zilch.payment.application.verification.verifier.FraudPaymentVerifier;
 import com.zilch.payment.application.verification.verifier.PaymentVerifier;
 import com.zilch.payment.domain.payment.Payment;
+import com.zilch.payment.domain.payment.PaymentCreatedEvent;
 import com.zilch.payment.domain.payment.PaymentProvider;
 import com.zilch.payment.domain.payment.enums.PaymentStatus;
 import com.zilch.payment.domain.verification.PaymentVerification;
 import com.zilch.payment.domain.verification.PaymentVerificationProvider;
-import com.zilch.payment.domain.verification.events.ReadyForVerificationEvent;
 import com.zilch.payment.domain.verification.enums.PaymentVerificationStatus;
+import com.zilch.payment.domain.verification.events.ReadyForVerificationEvent;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +31,10 @@ public class PaymentVerificationScheduler {
     private final ApplicationEventPublisher eventPublisher;
     private final List<PaymentVerifier> paymentVerifiers;
 
-    @Async
-    public void scheduleVerifications(Payment payment) {
+    @EventListener
+    @Async("verificationSchedulerExecutor")
+    public void scheduleVerifications(PaymentCreatedEvent paymentCreatedEvent) {
+        Payment payment = paymentCreatedEvent.payment();
         try {
             trySchedule(payment);
         } catch (Exception e) {

@@ -1,9 +1,9 @@
 package com.zilch.payment.application;
 
-import com.zilch.payment.application.verification.PaymentVerificationScheduler;
 import com.zilch.payment.domain.money.Money;
 import com.zilch.payment.domain.payment.FuturePaymentDetails;
 import com.zilch.payment.domain.payment.Payment;
+import com.zilch.payment.domain.payment.PaymentCreatedEvent;
 import com.zilch.payment.domain.payment.PaymentProvider;
 import com.zilch.payment.domain.payment.enums.Currency;
 import com.zilch.payment.domain.payment.enums.PaymentMethod;
@@ -14,9 +14,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
+
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -28,14 +31,14 @@ class PaymentServiceTests {
     private PaymentProvider paymentProvider;
 
     @Mock
-    private PaymentVerificationScheduler paymentVerificationScheduler;
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private PaymentService paymentService;
 
     @Test
-    @DisplayName("When initializing payment, should properly initialize payment and schedule verifications")
-    void initializePayment_ShouldSaveAndScheduleVerification() {
+    @DisplayName("When initializing payment, should properly initialize payment and publish event")
+    void initializePayment_ShouldSaveAndPublishEvent() {
         // Given
         BigDecimal amount = new BigDecimal("100.50");
         Currency currency = Currency.EUR;
@@ -66,7 +69,7 @@ class PaymentServiceTests {
         assertThat(result).isNotNull();
         assertThat(result).isEqualTo(newPayment);
         verify(paymentProvider).save(newPayment);
-        verify(paymentVerificationScheduler).scheduleVerifications(newPayment);
+        verify(eventPublisher).publishEvent(any(PaymentCreatedEvent.class));
     }
 
     @Test

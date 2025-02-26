@@ -16,15 +16,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class PaymentVerificationResultListener {
+public class PaymentVerificationResultAnalyzer {
 
-    private static final Logger logger = LoggerFactory.getLogger(PaymentVerificationResultListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(PaymentVerificationResultAnalyzer.class);
 
     private final PaymentProvider paymentProvider;
     private final PaymentVerificationProvider paymentVerificationProvider;
 
     @EventListener
-    @Async
+    @Async("verificationAnalyzerExecutor")
     public void processPaymentVerificationResult(PaymentVerificationCompletedEvent event) {
         logger.debug("Retrieved PaymentVerificationCompletedEvent event: " + event.toString());
         paymentVerificationProvider.updateStatus(event.verificationId(), event.verificationResult());

@@ -25,7 +25,7 @@ def send_request(_):
         print(f"Request failed: {e}")
 
 if __name__ == "__main__":
-    num_requests = 10000
+    num_requests = 500
     num_workers = multiprocessing.cpu_count() * 4
     with multiprocessing.Pool(num_workers) as pool:
         pool.map(send_request, range(num_requests))

@@ -32,7 +32,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PaymentVerificationResultListenerTests {
+class PaymentVerificationResultAnalyzerTests {
 
     private static final String PAYMENT_ID = UUID.randomUUID().toString();
 
@@ -63,7 +63,7 @@ class PaymentVerificationResultListenerTests {
     private PaymentVerificationProvider paymentVerificationProvider;
 
     @InjectMocks
-    private PaymentVerificationResultListener listener;
+    private PaymentVerificationResultAnalyzer listener;
 
     @Test
     @DisplayName("Set payment status to ACCEPTED when all verifications passed")

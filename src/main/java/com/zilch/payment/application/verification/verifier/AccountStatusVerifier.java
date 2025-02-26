@@ -31,7 +31,7 @@ public class AccountStatusVerifier implements PaymentVerifier {
         logger.info("Run account status payment verification for {} payment", payment.id());
         //All accounts are fine, but in a real env we can make some api calls here to verify an account in another ms
         //Work simulation
-        Thread.sleep(ThreadLocalRandom.current().nextLong(50, 2001));
+        Thread.sleep(ThreadLocalRandom.current().nextLong(50, 1001));
         //An exception can simulate unavailability of some external api
         /*if (new Random().nextBoolean()) {
             throw new RuntimeException("Processing error");

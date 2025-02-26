@@ -32,7 +32,7 @@ public class PaymentVerificationRunner {
     }
 
     @EventListener
-    @Async
+    @Async("verificationRunnerExecutor")
     public void runVerification(ReadyForVerificationEvent event) {
         PaymentVerification paymentVerification = event.paymentVerification();
         Payment payment = event.payment();
