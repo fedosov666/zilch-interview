@@ -24,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PaymentVerificationScheduler {
 
-    private static final Logger logger = LoggerFactory.getLogger(FraudPaymentVerifier.class);
+    private static final Logger logger = LoggerFactory.getLogger(PaymentVerificationScheduler.class);
 
     private final PaymentProvider paymentProvider;
     private final PaymentVerificationProvider paymentVerificationProvider;
